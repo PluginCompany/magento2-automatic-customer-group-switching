@@ -1,0 +1,21 @@
+/**
+ * Copyright (c) 2014-2026 Plugin Company
+ *
+ * This file is part of Automatic Customer Group Switching for Magento 2, released under the MIT License.
+ * See the LICENSE file in the project root.
+ */
+.multiselect-wide .admin__control-multiselect
+{
+    min-width:24rem;
+}
+
+.form-element-border-top {
+    border-top: 1px dashed #e6e6e6!important;
+    padding-top: 40px!important;
+    margin-top: 10px!important;
+}
+
+.rule-param a {
+    font-weight: 600;
+    text-decoration: underline;
+}
