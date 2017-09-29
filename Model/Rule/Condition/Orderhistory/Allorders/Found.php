@@ -122,7 +122,7 @@ class Found
                 }
             }
             
-            $this->_addCustomOrderAttributesToOrder($item);
+            $this->addCustomOrderAttributesToOrder($item);
 
             $found = $all;
             foreach ($this->getConditions() as $cond) {

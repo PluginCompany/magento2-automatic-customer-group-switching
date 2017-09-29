@@ -8,6 +8,7 @@
 namespace PluginCompany\CustomerGroupSwitching\Model;
 
 use Magento\Checkout\Model\Session as CheckoutSession;
+use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\ResourceModel\AddressRepository;
 use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory as CustomerCollectionFactory;
 use Magento\Customer\Model\ResourceModel\GroupRepository;
@@ -331,6 +332,7 @@ class Rule extends AbstractModel implements RuleInterface
             $this->customer->save();
         }
 
+        /** @var Customer $customer */
         if($this->lastProcessedRule && $this->hasCustomerSwitched()){
             $this->sendNotifications(
                 $this->customer,
@@ -504,7 +506,7 @@ class Rule extends AbstractModel implements RuleInterface
 
     private function hasCustomerSwitched()
     {
-        return $this->customer->getOrigData('group_id') != $this->customer->getGroupId();
+        return $this->customer->getOriginalGroupId() != $this->customer->getGroupId();
     }
 
     /**
@@ -532,8 +534,8 @@ class Rule extends AbstractModel implements RuleInterface
      * @param $rule
      * @return $this
      */
-    public function sendNotifications(DataObject $customer, $rule){
-
+    public function sendNotifications(DataObject $customer, $rule)
+    {
         //load customer store
         if($customer->getStoreId()){
             $store = $this->storeRepository->getById($customer->getStoreId());
@@ -544,14 +546,13 @@ class Rule extends AbstractModel implements RuleInterface
 
         //Template Variables
         $emailTemplateVariables = [
-            'from_group' => $this->customerGroupRepository->getById($customer->getOrigData('group_id')),
-            'to_group'   => $this->customerGroupRepository->getById($customer->getGroupId()),
+            'from_group' => $this->getCustomerGroupCode($customer->getOriginalGroupId()),
+            'to_group'   => $this->getCustomerGroupCode($customer->getGroupId()),
             'customer'   => $customer,
             'store'      => $store
         ];
 
         if($rule->getCustomerNotification()){
-
             $toEmail = $customer->getEmail();
             $toName = $customer->getName();
             $subject = $rule->getCustomerNotificationSubject();
@@ -571,6 +572,17 @@ class Rule extends AbstractModel implements RuleInterface
         }
 
         return $this;
+    }
+
+    private function getCustomerGroupCode($groupId)
+    {
+        return $this->getCustomerGroup($groupId)->getCode();
+    }
+
+    private function getCustomerGroup($groupId)
+    {
+        return $this->customerGroupRepository
+            ->getById($groupId);
     }
 
     /**
@@ -937,6 +949,7 @@ class Rule extends AbstractModel implements RuleInterface
         $billingData = $this->getCustomerBilling($customer);
         $shippingData = $this->getCustomerShipping($customer);
         $customerAttribtues = $this->getCustomerAttributes($customer);
+        $customer->setOriginalGroupId($customer->getGroupId());
 
         $data = array_merge($billingData, $shippingData,$customerAttribtues);
         $this->customerData = $data;
@@ -1125,9 +1138,11 @@ class Rule extends AbstractModel implements RuleInterface
             $fromGroup = $this->customerGroupRepository->getById(
                 $customer->getOrigData('group_id')
             )->getCode();
+
             $toGroup = $this->customerGroupRepository->getById(
                 $customer->getGroupId()
             )->getCode();
+
             if($fromGroup == $toGroup){
                 $toGroup = "No group change";
             }

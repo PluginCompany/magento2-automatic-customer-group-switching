@@ -14,6 +14,7 @@ use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\View\DesignInterface;
 use Magento\Rule\Block\Editable;
 use Magento\Rule\Model\Condition\Context;
+use Magento\Sales\Model\Order;
 use PluginCompany\CustomerGroupSwitching\Model\Rule\Condition\Compatibility\Combine as ConditionCombine;
 use PluginCompany\CustomerGroupSwitching\Model\Rule\Condition\Orderhistory\AllordersFactory;
 use Psr\Log\LoggerInterface;
@@ -204,13 +205,22 @@ class Combine extends ConditionCombine
         return $this;
     }
 
-    protected function _addCustomOrderAttributesToOrder($order)
+    /**
+     * @param Order $order
+     */
+    protected function addCustomOrderAttributesToOrder($order)
     {
         $order
             ->setBaseTotalInvoicedExTax($this->_getBaseTotalInvoicedExTaxForOrder($order))
             ->setBaseTotalInvoicedMinusRefunded($this->_getBaseTotalInvoicedMinusRefundedForOrder($order))
             ->setBaseTotalInvoicedMinusRefundedExTax($this->_getBaseTotalInvoicedMinusRefundedExTaxForOrder($order))
             ->setBaseTotalPaidMinusRefunded($this->_getBaseTotalPaidMinusRefundedForOrder($order));
+
+        if($order->getPayment()){
+            $order->setPaymentMethod(
+                $order->getPayment()->getMethod()
+            );
+        }
     }
 
     protected function _getBaseTotalInvoicedExTaxForOrder($order)

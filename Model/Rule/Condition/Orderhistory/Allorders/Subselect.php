@@ -177,7 +177,7 @@ class Subselect
                 }
             }
             
-            $this->_addCustomOrderAttributesToOrder($item);
+            $this->addCustomOrderAttributesToOrder($item);
 
             if (parent::validate($item)) {
                 $total += 1;

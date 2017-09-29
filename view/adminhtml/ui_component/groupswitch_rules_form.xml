@@ -283,7 +283,7 @@
                     <item name="label" translate="true" xsi:type="string">Notification Subject</item>
                     <item name="formElement" xsi:type="string">input</item>
                     <item name="dataScope" xsi:type="string">customer_notification_subject</item>
-                    <item name="default" xsi:type="string" translate="true">Your account has been moved to the {{var to_group.customer_group_code}} group</item>
+                    <item name="default" xsi:type="string" translate="true">Your account has been moved to the {{var to_group}} group</item>
                     <item name="validation" xsi:type="array">
                         <item name="required-entry" xsi:type="boolean">true</item>
                     </item>
@@ -294,7 +294,7 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="default" xsi:type="string"><![CDATA[<p>Dear&nbsp;<span>{{var customer.getName()}},</span></p>
-<p><span>We'd like to notify you that your account has been moved from the&nbsp;{{var from_group.customer_group_code}} group to the&nbsp;{{var to_group.customer_group_code}} group.</span></p>
+<p><span>We'd like to notify you that your account has been moved from the&nbsp;{{var from_group}} group to the&nbsp;{{var to_group.customer_group_code}} group.</span></p>
 <p>Best regards,</p>
 <p>{{var store.getFrontendName()}}</p>]]></item>
                     <item name="dataType" xsi:type="string">text</item>
@@ -361,7 +361,7 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="default" xsi:type="string"><![CDATA[<p>Dear&nbsp;<span>{{var customer.getName()}},</span></p>
-<p><span>We'd like to notify you that your account has been moved from the&nbsp;{{var from_group.customer_group_code}} group to the&nbsp;{{var to_group.customer_group_code}} group.</span></p>
+<p><span>We'd like to notify you that your account has been moved from the&nbsp;{{var from_group}} group to the&nbsp;{{var to_group}} group.</span></p>
 <p>Best regards,</p>
 <p>{{var store.getFrontendName()}}</p>]]></item>
                     <item name="dataType" xsi:type="string">text</item>

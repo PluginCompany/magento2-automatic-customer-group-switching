@@ -9,6 +9,8 @@ namespace PluginCompany\CustomerGroupSwitching\Model\Rule\Condition\Orderhistory
 
 use Magento\Eav\Model\Entity\AttributeFactory;
 use Magento\Framework\DataObject;
+use Magento\Payment\Model\Config\Source\Allmethods as PaymentAllmethods;
+use Magento\Shipping\Model\Config\Source\Allmethods as ShippingAllmethods;
 use PluginCompany\CustomerGroupSwitching\Model\Rule\Condition\Compatibility\AbstractCondition;
 use Magento\Rule\Model\Condition\Context;
 use Magento\Directory\Model\Config\Source\AllregionFactory;
@@ -31,17 +33,37 @@ class Allorders extends AbstractCondition
      */
     protected $_entityAttributeFactory;
 
+    /** @var Allmethods */
+    protected $sourceShippingMethods;
+
+    /** @var PaymentAllmethods */
+    protected $sourcePaymentMethods;
+
+
+    /**
+     * Allorders constructor.
+     * @param Context $context
+     * @param AttributeFactory $entityAttributeFactory
+     * @param AllregionFactory $sourceAllregionFactory
+     * @param CountryFactory $sourceCountryFactory
+     * @param ShippingAllmethods $sourceShippingMethods
+     * @param PaymentAllmethods $sourcePaymentMethods
+     * @param array $data
+     */
     public function __construct(
         Context $context,
         AttributeFactory $entityAttributeFactory,
         AllregionFactory $sourceAllregionFactory,
         CountryFactory $sourceCountryFactory,
-        array $data = [])
-    {
+        ShippingAllmethods $sourceShippingMethods,
+        PaymentAllmethods $sourcePaymentMethods,
+        array $data = []
+    ) {
         $this->_entityAttributeFactory = $entityAttributeFactory;
         $this->_sourceAllregionFactory = $sourceAllregionFactory;
         $this->_sourceCountryFactory = $sourceCountryFactory;
-
+        $this->sourceShippingMethods = $sourceShippingMethods;
+        $this->sourcePaymentMethods = $sourcePaymentMethods;
         parent::__construct($context, $data);
     }
 
@@ -81,6 +103,7 @@ class Allorders extends AbstractCondition
             'customer_taxvat' => __('VAT Number'),
             'order_currency_code' => __('Currency Code'),
             'shipping_method' => __('Shipping Method'),
+            'payment_method' => __('Payment Method'),
 //            'created_at' => __('Order Date'),
         ];
 
@@ -115,49 +138,6 @@ class Allorders extends AbstractCondition
         return $this;
     }
 
-    protected function _prepareValueOptions()
-    {
-        // Check that both keys exist. Maybe somehow only one was set not in this routine, but externally.
-        $selectReady = $this->getData('value_select_options');
-        $hashedReady = $this->getData('value_option');
-        if ($selectReady && $hashedReady) {
-            return $this;
-        }
-
-        // Get array of select options. It will be used as source for hashed options
-        $selectOptions = null;
-        if(is_object($this->getAttributeObject())) {
-            $attributeObject = $this->getAttributeObject();
-            if ($attributeObject->usesSource()) {
-                if ($attributeObject->getFrontendInput() == 'multiselect') {
-                    $addEmptyOption = false;
-                } else {
-                    $addEmptyOption = true;
-                }
-                $selectOptions = $attributeObject->getSource()->getAllOptions($addEmptyOption);
-            }
-        }
-
-        // Set new values only if we really got them
-        if ($selectOptions !== null) {
-            // Overwrite only not already existing values
-            if (!$selectReady) {
-                $this->setData('value_select_options', $selectOptions);
-            }
-            if (!$hashedReady) {
-                $hashedOptions = [];
-                foreach ($selectOptions as $o) {
-                    if (is_array($o['value'])) {
-                        continue; // We cannot use array as index
-                    }
-                    $hashedOptions[$o['value']] = $o['label'];
-                }
-                $this->setData('value_option', $hashedOptions);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * Retrieve attribute object
@@ -193,18 +173,6 @@ class Allorders extends AbstractCondition
     }
 
     /**
-     * Retrieve value by option
-     *
-     * @param mixed $option
-     * @return string
-     */
-    public function getValueOption($option=null)
-    {
-        $this->_prepareValueOptions();
-        return $this->getData('value_option'.(!is_null($option) ? '/'.$option : ''));
-    }
-
-    /**
      * Get value select options for rule generation
      *
      * @return mixed
@@ -223,6 +191,12 @@ class Allorders extends AbstractCondition
                 case 'shippingattr_country_id':
                     $options = $this->_sourceCountryFactory->create()
                         ->toOptionArray();
+                    break;
+                case 'shipping_method':
+                    $options = $this->sourceShippingMethods->toOptionArray(true);
+                    break;
+                case 'payment_method':
+                    $options = $this->sourcePaymentMethods->toOptionArray(true);
                     break;
 
                 default:
@@ -254,6 +228,9 @@ class Allorders extends AbstractCondition
     {
         if (!is_object($this->getAttributeObject())) {
             return 'string';
+        }
+        if ($this->isSelectAttribute()) {
+            return 'select';
         }
         switch ($this->getAttributeObject()->getFrontendInput()) {
             case 'select':
@@ -298,7 +275,7 @@ class Allorders extends AbstractCondition
      */
     public function getValueElementType()
     {
-        if ($this->getAttribute()==='attribute_set_id') {
+        if ($this->isSelectAttribute()) {
             return 'select';
         }
         if (!is_object($this->getAttributeObject())) {
@@ -318,6 +295,20 @@ class Allorders extends AbstractCondition
             default:
                 return 'text';
         }
+    }
+
+    protected function isSelectAttribute()
+    {
+        return in_array($this->getAttribute(), $this->getCustomSelectAttributeCodes());
+    }
+
+    private function getCustomSelectAttributeCodes()
+    {
+        return [
+            'attribute_set_id',
+            'shipping_method',
+            'payment_method'
+        ];
     }
 
     /**
