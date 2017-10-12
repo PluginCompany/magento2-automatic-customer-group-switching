@@ -328,20 +328,20 @@ class Rule extends AbstractModel implements RuleInterface
             }
         }
 
-        if ($canSave && $this->hasCustomerSwitched()) {
-            $this->customer->save();
+        if(!$this->hasCustomerSwitched()){
+            return $this;
         }
 
-        /** @var Customer $customer */
-        if($this->lastProcessedRule && $this->hasCustomerSwitched()){
-            $this->sendNotifications(
-                $this->customer,
-                $this->lastProcessedRule
-            );
-            $this->registerOrderGroupIdIfApplicable(
-                $this->customer->getGroupId()
-            );
+        if ($canSave) {
+            $this->customer->save();
         }
+        $this->sendNotifications(
+            $this->customer,
+            $this->lastProcessedRule
+        );
+        $this->registerOrderGroupIdIfApplicable(
+            $this->customer->getGroupId()
+        );
         return $this;
     }
 
@@ -506,6 +506,9 @@ class Rule extends AbstractModel implements RuleInterface
 
     private function hasCustomerSwitched()
     {
+        if(!$this->lastProcessedRule){
+            return false;
+        }
         return $this->customer->getOriginalGroupId() != $this->customer->getGroupId();
     }
 
@@ -649,8 +652,10 @@ class Rule extends AbstractModel implements RuleInterface
         $customer
             ->setGroupId($newGroupId);
 
-        $this->setGroupIdToSession($newGroupId);
-
+        $this
+            ->setGroupIdToSession($newGroupId)
+            ->addGroupIdRegistryEntry($newGroupId)
+        ;
 
         $this->lastProcessedRule = $rule;
 
@@ -666,18 +671,28 @@ class Rule extends AbstractModel implements RuleInterface
         if($this->isCurrentAreaAdmin()){
             return $this;
         }
-        //customer session
-        $this->customerSession->setCustomerGroupId($groupId);
 
-        //customer quote
+        //checkout session
         $this->getCustomerFromQuote()
             ->setGroupId($groupId);
+        $this->getQuote()->setCustomerGroupId($groupId);
+        $this->checkoutSession->setCustomerGroupId($groupId);
 
         //customer session
+        $this->customerSession->setCustomerGroupId($groupId);
         $sCust = $this->customerSession->getCustomer();
         if($sCust){
             $sCust->setGroupId($groupId);
         }
+        return $this;
+    }
+
+    private function addGroupIdRegistryEntry($groupId)
+    {
+        if($this->_registry->registry('pc_new_customer_group_id')){
+            $this->_registry->unregister('pc_new_customer_group_id');
+        }
+        $this->_registry->register('pc_new_customer_group_id', $groupId);
         return $this;
     }
 
