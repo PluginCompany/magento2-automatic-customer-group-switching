@@ -27,8 +27,8 @@ class Allorders extends AbstractProduct
         HelperData $backendData, 
         Config $config, 
         ProductFactory $productFactory, 
-        ProductRepositoryInterface $productRepository, 
-        Product $productResource, 
+        ProductRepositoryInterface $productRepository,
+        Product $productResource,
         Collection $attrSetCollection, 
         FormatInterface $localeFormat, 
         array $data = [])
@@ -58,11 +58,11 @@ class Allorders extends AbstractProduct
      *
      * @return bool
      */
-    public function validate(DataObject $object)
+    public function validateDataObject(DataObject $object)
     {
         $product = $object->getProduct();
         if (!($product instanceof ModelProduct)) {
-            $product = $this->productRepository->getById($object->getProductId());
+            $product = $this->_productFactory->create()->load($object->getProductId());
         }
 
         $product

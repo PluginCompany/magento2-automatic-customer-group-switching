@@ -137,17 +137,6 @@ class Combine extends ConditionCombine
             ]
         ];
 
-        //get current cart product attributes
-        /*
-         *
-        $recurringProfilesCondition = [
-            'label' => 'Recurring Profiles',
-            'value' => [
-                ['value' => 'PluginCompany\CustomerGroupSwitching\Model\Rule\Condition\Recurring\Found', 'label' => __('Attribute combination')],
-            ]
-        ];
-        */
-
         //set attributes
         $conditions = parent::getNewChildSelectOptions();
         $conditions = array_merge_recursive($conditions, [
@@ -160,7 +149,6 @@ class Combine extends ConditionCombine
             $orderhistoryAllordersCondition,
             $productAllordersCondition,
             $productNeworderCondtion
-//            $recurringProfilesCondition
         ]);
 
         return $conditions;

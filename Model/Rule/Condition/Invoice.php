@@ -11,6 +11,7 @@
 namespace PluginCompany\CustomerGroupSwitching\Model\Rule\Condition;
 
 use Magento\Framework\DataObject;
+use Magento\Framework\Model\AbstractModel;
 
 class Invoice extends Totals
 {
@@ -43,7 +44,7 @@ class Invoice extends Totals
      * @param DataObject $object
      * @return bool
      */
-    public function validate(DataObject $object)
+    public function validateDataObject(DataObject $object)
     {
         $period = $this->getPeriodRange();
         $totals = $this->getRule()->getInvoiceTotals($period['from'], $period['to']);
@@ -58,4 +59,5 @@ class Invoice extends Totals
 
         return parent::validate($totals);
     }
+
 }

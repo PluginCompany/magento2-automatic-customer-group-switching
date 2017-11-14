@@ -14,7 +14,7 @@ use Magento\Framework\Registry;
 use Magento\Framework\Data\FormFactory;
 use Magento\Rule\Block\Conditions as BlockConditions;
 use Magento\Backend\Block\Widget\Form\Renderer\Fieldset;
-use PluginCompany\CustomerGroupSwitching\Model\Rule\Condition\Compatibility\AbstractCondition;
+use Magento\Rule\Model\Condition\AbstractCondition;
 use PluginCompany\CustomerGroupSwitching\Model\RuleRepository;
 
 class Conditions

@@ -71,7 +71,7 @@ class Totals extends AbstractCondition
             . $this->getTypeElementHtml()
             . $this->getAttributeElementHtml()
             . "in the order history"
-            . $this->getPeriodTypeElement()->toHtml()
+            . $this->getPeriodTypeDropdown()->toHtml()
             . "<span style='$displayBetween' id='"  . $identifier  . "between'>"
             . $this->getFromDateElement()->getHtml()  . " and " . $this->getToDateElement()->getHtml()
             . "</span>"

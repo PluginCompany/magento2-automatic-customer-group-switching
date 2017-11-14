@@ -53,7 +53,7 @@ class Found
      * @param DataObject $object Quote
      * @return boolean
      */
-    public function validate(DataObject $object)
+    public function validateDataObject(DataObject $object)
     {
         $all = $this->getAggregator()==='all';
         $true = (bool)$this->getValue();

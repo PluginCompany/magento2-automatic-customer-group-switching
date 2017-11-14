@@ -120,7 +120,7 @@ class Subselect
      * @param DataObject $object Quote
      * @return boolean
      */
-    public function validate(DataObject $object)
+    public function validateDataObject(DataObject $object)
     {
         if (!$this->getConditions()) {
             return false;

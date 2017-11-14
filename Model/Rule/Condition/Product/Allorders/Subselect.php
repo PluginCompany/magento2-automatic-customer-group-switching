@@ -130,7 +130,7 @@ class Subselect
             $this->getAttributeElement()->getHtml(),
             $this->getOperatorElement()->getHtml(),
             $this->getValueElement()->getHtml(),
-            $this->getPeriodTypeElement()->toHtml(),
+            $this->getPeriodTypeDropdown()->toHtml(),
             $this->getFromDateElement()->getHtml(),
             $this->getToDateElement()->getHtml(),
             $this->getRecentDaysElement()->getHtml(),
@@ -152,7 +152,7 @@ class Subselect
      * @param DataObject $object Quote
      * @return boolean
      */
-    public function validate(DataObject $object)
+    public function validateDataObject(DataObject $object)
     {
         if (!$this->getConditions()) {
             return false;

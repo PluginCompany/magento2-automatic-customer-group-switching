@@ -140,15 +140,4 @@ class Billing extends AbstractCondition
         }
         return $this->getData('value_select_options');
     }
-
-    /**
-     * Validate Address Rule Condition
-     *
-     * @param DataObject $object
-     * @return bool
-     */
-    public function validate(DataObject $object)
-    {
-        return parent::validate($object);
-    }
 }

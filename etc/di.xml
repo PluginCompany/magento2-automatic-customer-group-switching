@@ -27,4 +27,7 @@
         <argument name="resourceModel" xsi:type="string">PluginCompany\CustomerGroupSwitching\Model\ResourceModel\Rule</argument>
     </arguments>
     </virtualType>
+    <type name="Magento\Rule\Model\Condition\AbstractCondition">
+        <plugin sortOrder="-100" name="pluginCompanyCustomerGroupSwitchingAbstractCondition" type="PluginCompany\CustomerGroupSwitching\Plugin\Model\Condition\AbstractConditionPlugin"/>
+    </type>
 </config>

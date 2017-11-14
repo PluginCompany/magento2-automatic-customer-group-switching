@@ -10,7 +10,7 @@ namespace PluginCompany\CustomerGroupSwitching\Controller\Adminhtml\Rules;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use PluginCompany\CustomerGroupSwitching\Model\Rule\Condition\Compatibility\AbstractCondition;
+use Magento\Rule\Model\Condition\AbstractCondition;
 use Psr\Log\LoggerInterface;
 
 class NewConditionHtml extends Action

@@ -53,7 +53,7 @@ class Order extends Totals
      * @param DataObject $object
      * @return bool
      */
-    public function validate(DataObject $object)
+    public function validateDataObject(DataObject $object)
     {
         $period = $this->getPeriodRange();
         $totals = $this->getRule()->getOrderTotals($period['from'], $period['to']);
@@ -66,6 +66,6 @@ class Order extends Totals
         $totals = new DataObject();
         $totals->setData($attributes);
 
-        return parent::validate($totals);
+        return parent::validateDataObject($totals);
     }
 }

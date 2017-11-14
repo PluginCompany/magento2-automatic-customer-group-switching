@@ -310,17 +310,4 @@ class Allorders extends AbstractCondition
             'payment_method'
         ];
     }
-
-    /**
-     * Validate Orderhistory Rule Condition
-     *
-     * @param DataObject $object
-     *
-     * @return bool
-     */
-    public function validate(DataObject $object)
-    {
-        $valid = parent::validate($object);
-        return $valid;
-    }
 }

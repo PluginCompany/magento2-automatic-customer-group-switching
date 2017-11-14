@@ -58,12 +58,11 @@ class Neworder extends AbstractProduct
      *
      * @return bool
      */
-    public function validate(DataObject $object)
+    public function validateDataObject(DataObject $object)
     {
-        /** @var ModelProduct $product */
         $product = $object->getProduct();
         if (!($product instanceof ModelProduct)) {
-            $product = $this->productRepository->getById($object->getProductId());
+            $product = $this->_productFactory->create()->load($object->getProductId());
         }
 
         $product

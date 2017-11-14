@@ -18,7 +18,6 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Data\FormFactory;
 use Magento\Framework\DataObject;
-use Magento\Framework\DataObjectFactory;
 use Magento\Framework\Stdlib\DateTime\DateTimeFactory;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Rule\Model\AbstractModel;
@@ -35,6 +34,7 @@ use Magento\Newsletter\Model\SubscriberFactory;
 use PluginCompany\CustomerGroupSwitching\Model\Mailer;
 use PluginCompany\CustomerGroupSwitching\Model\Rule\Condition\CombineFactory;
 use PluginCompany\CustomerGroupSwitching\Model\RuleFactory;
+use PluginCompany\CustomerGroupSwitching\Model\ValidationDataObjectFactory;
 
 class Rule extends AbstractModel implements RuleInterface
 {
@@ -125,7 +125,7 @@ class Rule extends AbstractModel implements RuleInterface
     protected $groupswitchRuleFactory;
 
     /**
-     * @var DataObjectFactory
+     * @var ValidationDataObjectFactory
      */
     protected $dataObjectFactory;
 
@@ -181,7 +181,7 @@ class Rule extends AbstractModel implements RuleInterface
         CheckoutSession $checkoutSession,
         CustomerCollectionFactory $customerCollectionFactory,
         RuleFactory $groupswitchRuleFactory,
-        DataObjectFactory $dataObjectFactory,
+        ValidationDataObjectFactory $dataObjectFactory,
         FormFactory $formFactory,
         TimezoneInterface $localeDate,
         Mailer $mailer,
@@ -452,7 +452,7 @@ class Rule extends AbstractModel implements RuleInterface
 
     public function getToGroupsArray()
     {
-        return explode(',', $this->getOldCustomergroup());
+        return explode(',', $this->getNewCustomergroup());
     }
 
     public function isApplicableForEvent($eventCode)

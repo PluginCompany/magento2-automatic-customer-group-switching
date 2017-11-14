@@ -59,7 +59,7 @@ class Found
                 . "<span style='$displayMoredays' id='" . $identifier . "moredaysago'>%6 days</span>"
                 . ", with %7 of these conditions true:",
                 $this->getValueElement()->getHtml(),
-                $this->getPeriodTypeElement()->toHtml(),
+                $this->getPeriodTypeDropdown()->toHtml(),
                 $this->getFromDateElement()->getHtml(),
                 $this->getToDateElement()->getHtml(),
                 $this->getRecentDaysElement()->getHtml(),
@@ -79,7 +79,7 @@ class Found
      * @param DataObject $object Quote
      * @return boolean
      */
-    public function validate(DataObject $object)
+    public function validateDataObject(DataObject $object)
     {
         $all = $this->getAggregator()==='all';
         $true = (bool)$this->getValue();

@@ -347,16 +347,4 @@ class Customer extends AbstractCondition
                 return 'text';
         }
     }
-
-
-    /**
-     * Validate Address Rule Condition
-     *
-     * @param DataObject $object
-     * @return bool
-     */
-    public function validate(DataObject $object)
-    {
-        return parent::validate($object);
-    }
 }
