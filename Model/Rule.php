@@ -1055,7 +1055,7 @@ class Rule extends AbstractModel implements RuleInterface
         if(!$addresses) return false;
 
         foreach($addresses as $address){
-            if($address->getIsDefaultBilling()){
+            if($address->isDefaultBilling()){
                 return $address;
             }
         }
@@ -1121,7 +1121,7 @@ class Rule extends AbstractModel implements RuleInterface
         if(!$addresses) return false;
 
         foreach($addresses as $address){
-            if($address->getIsDefaultShipping()){
+            if($address->isDefaultShipping()){
                 return $address;
             }
         }

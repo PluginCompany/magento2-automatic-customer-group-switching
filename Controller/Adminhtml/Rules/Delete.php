@@ -70,7 +70,7 @@ class Delete extends Action
         return $this;
     }
 
-    private function handleError($e)
+    private function handleError(\Exception $e)
     {
         $this->addError($e->getMessage());
 
