@@ -57,7 +57,7 @@ class Invoice extends Totals
         $totals = new DataObject();
         $totals->setData($attributes);
 
-        return parent::validate($totals);
+        return parent::validateDataObject($totals);
     }
 
 }

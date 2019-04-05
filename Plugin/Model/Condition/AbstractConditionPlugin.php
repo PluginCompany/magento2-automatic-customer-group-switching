@@ -97,6 +97,7 @@ class AbstractConditionPlugin
         \Magento\Rule\Model\Condition\AbstractCondition $subject,
         callable $proceed
     ){
+        $this->initVars(func_get_args());
         if(!$this->isGroupSwitchingClass()){
             return $proceed();
         }
@@ -119,6 +120,7 @@ class AbstractConditionPlugin
         \Magento\Rule\Model\Condition\AbstractCondition $subject,
         callable $proceed
     ){
+        $this->initVars(func_get_args());
         if(!$this->isGroupSwitchingClass()){
             return $proceed();
         }
@@ -135,6 +137,7 @@ class AbstractConditionPlugin
         $method,
         $arguments
     ) {
+        $this->initVars(func_get_args());
         if(!$this->isGroupSwitchingClass()){
             return $proceed($method, $arguments);
         }
@@ -160,6 +163,7 @@ class AbstractConditionPlugin
         \Magento\Rule\Model\Condition\AbstractCondition $subject,
         callable $proceed
     ){
+        $this->initVars(func_get_args());
         if(!$this->isGroupSwitchingClass()){
             return $proceed();
         }

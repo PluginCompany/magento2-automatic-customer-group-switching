@@ -133,32 +133,34 @@ class Mailer extends TransportBuilder
     {
         $this->reset();
         $this
-            ->resetMessage()
             ->filterMailData()
         ;
         $mailData = $this->mailData;
+        $this->setBodyHtmlToMessage();
         $this->message
-            ->setBody($this->getSurroundedBodyHtml())
             ->setSubject($mailData->getSubject())
             ->setFrom($mailData->getFromEmail(), $mailData->getFromName())
             ->setReplyTo($mailData->getReplyTo())
-            ->addBcc($this->getBcc())
             ->addTo($this->getToEmail(), $mailData->getToName())
         ;
+        if($this->getBcc()){
+            $this->message->addBcc($this->getBcc());
+        }
         $this->getTransport()->sendMessage();
-        $this->resetMessage();
         $this->reset();
         return $this;
     }
 
-    public function resetMessage()
+    private function setBodyHtmlToMessage()
     {
+        $html = $this->getSurroundedBodyHtml();
+        if($this->isMagento23Plus()) {
+            $this->message->setBodyHtml($html);
+            return $this;
+        }
         $this->message
-            ->clearFrom()
-            ->clearMessageId()
-            ->clearRecipients()
-            ->clearReplyTo()
-            ->clearSubject();
+            ->setMessageType('text/html')
+            ->setBody($html);
         return $this;
     }
 
@@ -213,6 +215,25 @@ class Mailer extends TransportBuilder
         $this->mailData = $mailData;
     }
 
+    private function isMagento23Plus()
+    {
+        return version_compare($this->getMagentoVersion(), '2.3.0') >= 0;
+    }
+
+    private function getMagentoVersion()
+    {
+        return $this->getProductMetaData()->getVersion();
+    }
+
+    /**
+     * @return \Magento\Framework\App\ProductMetadataInterface
+     */
+    private function getProductMetaData()
+    {
+        /** @var \Magento\Framework\App\ProductMetadataInterface $metaData */
+        return $this->objectManager->create('\Magento\Framework\App\ProductMetadataInterface');
+    }
+
     /**
      * Prepare message
      *
@@ -220,15 +241,6 @@ class Mailer extends TransportBuilder
      */
     protected function prepareMessage()
     {
-        try{
-            $this->message
-                ->setMessageType('text/html');
-            $this->message
-                ->setBodyHtml($this->getSurroundedBodyHtml());
-        }catch(\Exception $e){
-            //todo error logging
-        }
         return $this;
     }
-
 }
