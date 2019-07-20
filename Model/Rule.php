@@ -163,6 +163,7 @@ class Rule extends AbstractModel implements RuleInterface
     private $order;
     private $save;
     private $allowedRuleIds;
+    /** @var Customer */
     private $customer;
     private $validationObject;
 
@@ -351,7 +352,7 @@ class Rule extends AbstractModel implements RuleInterface
     private function getFilteredRuleCollectionForProcessing()
     {
         return $this->getRulesCollection(
-            $this->customer->getWebsiteId(),
+            $this->customer->getData('store_id'),
             $this->getCurrentDate(),
             $this->allowedRuleIds
         );
