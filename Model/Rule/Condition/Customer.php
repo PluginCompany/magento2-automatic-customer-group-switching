@@ -11,7 +11,7 @@
  */
 namespace PluginCompany\CustomerGroupSwitching\Model\Rule\Condition;
 
-use Magento\Customer\Model\CustomerFactory;
+use Magento\Customer\Model\CustomerFactory as CustomerCustomerFactory; //workaround for PHP 5.6 Magento 2.1.x bug..
 use Magento\Eav\Model\Config;
 use Magento\Framework\DataObject;
 use Magento\Framework\Date;
@@ -31,14 +31,14 @@ class Customer extends AbstractCondition
      */
     protected $_viewDesignInterface;
 
-    /** @var CustomerFactory */
+    /** @var CustomerCustomerFactory */
     protected $customerFactory;
 
     public function __construct(
         Context $context,
         Config $modelConfig,
         DesignInterface $viewDesignInterface,
-        CustomerFactory $customerFactory,
+        CustomerCustomerFactory $customerFactory,
         array $data = []
     ) {
         $this->_modelConfig = $modelConfig;
