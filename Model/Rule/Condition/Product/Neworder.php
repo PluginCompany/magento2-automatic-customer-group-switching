@@ -11,7 +11,6 @@ use Magento\Backend\Helper\Data as HelperData;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product as ModelProduct;
 use Magento\Catalog\Model\ProductFactory;
-use Magento\Catalog\Model\Product\Type\Configurable;
 use Magento\Catalog\Model\ResourceModel\Product;
 use Magento\Eav\Model\Config;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection;
@@ -71,7 +70,7 @@ class Neworder extends AbstractProduct
             ->setQuoteItemRowTotal($object->getBaseRowTotal());
 
         $valid = parent::validate($product);
-        if (!$valid && $product->getTypeId() == Configurable::TYPE_CODE) {
+        if (!$valid && $product->getTypeId() == 'configurable') {
             $children = $object->getChildren();
             $valid = $children && $this->validate($children[0]);
         }
