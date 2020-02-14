@@ -17,7 +17,7 @@
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
     <arguments>
         <argument name="collections" xsi:type="array">
-            <item name="rule_listing_data_source" xsi:type="string">PluginCompany\CustomerGroupSwitching\Model\ResourceModel\Grid\Rule\Collection</item>
+            <item name="groupswitch_rule_listing_data_source" xsi:type="string">PluginCompany\CustomerGroupSwitching\Model\ResourceModel\Grid\Rule\Collection</item>
         </argument>
     </arguments>
     </type>
