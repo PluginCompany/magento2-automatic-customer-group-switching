@@ -293,10 +293,10 @@
         <field name="customer_notification_contents">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="default" xsi:type="string"><![CDATA[<p>Dear&nbsp;<span>{{var customer.getName()}},</span></p>
+                    <item name="default" xsi:type="string"><![CDATA[<p>Dear&nbsp;<span>{{var customer.name}},</span></p>
 <p><span>We'd like to notify you that your account has been moved from the&nbsp;{{var from_group}} group to the&nbsp;{{var to_group.customer_group_code}} group.</span></p>
 <p>Best regards,</p>
-<p>{{var store.getFrontendName()}}</p>]]></item>
+<p>{{var store.name}}</p>]]></item>
                     <item name="dataType" xsi:type="string">text</item>
                     <item name="label" translate="true" xsi:type="string">Notification Content</item>
                     <item name="formElement" xsi:type="string">wysiwyg</item>
@@ -357,17 +357,16 @@
                     <item name="validation" xsi:type="array">
                         <item name="required-entry" xsi:type="boolean">true</item>
                     </item>
-                    <item name="default" xsi:type="string">Customer {{var customer.getName()}} moved to the {{var to_group.customer_group_code}} group</item>
+                    <item name="default" xsi:type="string">Customer {{var customer.name}} moved to the {{var to_group.customer_group_code}} group</item>
                 </item>
             </argument>
         </field>
         <field name="admin_notification_contents">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="default" xsi:type="string"><![CDATA[<p>Dear&nbsp;<span>{{var customer.getName()}},</span></p>
-<p><span>We'd like to notify you that your account has been moved from the&nbsp;{{var from_group}} group to the&nbsp;{{var to_group}} group.</span></p>
+                    <item name="default" xsi:type="string"><![CDATA[<p><span>{{var customer.name}} has been been moved from the&nbsp;{{var from_group}} group to the&nbsp;{{var to_group}} group.</span></p>
 <p>Best regards,</p>
-<p>{{var store.getFrontendName()}}</p>]]></item>
+<p>{{var store.name}}</p>]]></item>
                     <item name="dataType" xsi:type="string">text</item>
                     <item name="label" translate="true" xsi:type="string">Notification Content</item>
                     <item name="formElement" xsi:type="string">wysiwyg</item>

@@ -7,15 +7,42 @@
  */
 namespace PluginCompany\CustomerGroupSwitching\Model;
 
-use Magento\Email\Model\TemplateFactory;
+use Magento\Customer\Model\Customer;
+use Magento\Email\Model\Template\Filter;
+use Magento\Email\Model\Template\FilterFactory;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\DataObject;
 
-class Mailer extends TransportBuilder
+class Mailer
 {
 
     private $mailData;
+
+    /**
+     * @var Filter
+     */
     private $templateFilter;
+    /**
+     * @var TransportBuilder
+     */
+    private $transportBuilder;
+
+    private $templateVars = [];
+
+    /**
+     * @var FilterFactory
+     */
+    private $filterFactory;
+
+    public function __construct(
+        TransportBuilder $transportBuilder,
+        FilterFactory $filterFactory
+    )
+    {
+        $this->transportBuilder = $transportBuilder;
+        $this->filterFactory = $filterFactory;
+        $this->templateFilter = $this->filterFactory->create();
+    }
 
     public function setReplyTo($value, $name = null)
     {
@@ -69,31 +96,26 @@ class Mailer extends TransportBuilder
     public function setBody($value)
     {
         $this->getMailData()
-            ->setBody($value);
+            ->setBody($value)
+        ;
         return $this;
     }
 
     public function setTemplateVars($vars)
     {
-        $this->getTemplateFilter()
-            ->setVariables($vars);
-        return $this;
-    }
-
-    public function getTemplateFilter()
-    {
-        if(!$this->templateFilter)
-            $this->initTemplateFilter();
-
-        return $this->templateFilter;
-    }
-
-    private function initTemplateFilter()
-    {
-        $this->templateFilter =
-            $this->templateFactory
-                ->get(null)
-                ->getTemplateFilter();
+        if(isset($vars['customer'])) {
+            $customer = $vars['customer'];
+            $vars['customer'] = $customer->getData();
+            $vars['customer']['name'] = $customer->getName();
+            $vars['customer'] = new DataObject($vars['customer']);
+        }
+        if(isset($vars['store'])) {
+            $vars['store'] = new DataObject($vars['store']->getData());
+        }
+        $this->templateVars = array_merge($this->templateVars, $vars);
+        $this->transportBuilder
+            ->setTemplateVars($this->templateVars)
+        ;
         return $this;
     }
 
@@ -119,71 +141,42 @@ class Mailer extends TransportBuilder
         return $this->initMailData();
     }
 
-    private function getBodyPrefix()
-    {
-        return '<html><body style="font-family:calibri,arial,helvetica,sans-serif;font-size:11pt">';
-    }
-
-    private function getBodySuffix()
-    {
-        return '</body></html>';
-    }
-
     public function sendMail()
     {
-        $this->reset();
-        $this
-            ->filterMailData()
-        ;
+        $this->filterMailData();
         $mailData = $this->mailData;
-        $this->setBodyHtmlToMessage();
-        $this->message
-            ->setSubject($mailData->getSubject())
-            ->setFrom($mailData->getFromEmail(), $mailData->getFromName())
-            ->setReplyTo($mailData->getReplyTo())
+        $transportBuilder = $this->transportBuilder
+            ->setTemplateIdentifier('customer_group_switch_notification')
+            ->setTemplateOptions(
+                [
+                    'area' => 'frontend',
+                    'store' => $this->templateVars['store']->getStoreId()
+                ]
+            )
+            ->setTemplateVars([
+                'email_subject' => $mailData->getSubject(),
+                'content' => $mailData->getBody()
+            ])
+            ->setFrom(
+                [
+                    'email' => $mailData->getFromEmail(),
+                    'name' => $mailData->getFromName()
+                ]
+            )
             ->addTo($this->getToEmail(), $mailData->getToName())
         ;
+        if($mailData->getReplyTo()) {
+            $transportBuilder->setReplyTo($mailData->getReplyTo());
+        }
         if($this->getBcc()){
-            $this->message->addBcc($this->getBcc());
+            $transportBuilder->addBcc($this->getBcc());
         }
-        $this->getTransport()->sendMessage();
-        $this->reset();
+
+        $transport = $transportBuilder->getTransport();
+
+        $transport->sendMessage();
         return $this;
     }
-
-    private function setBodyHtmlToMessage()
-    {
-        $html = $this->getSurroundedBodyHtml();
-        if($this->isMagento23Plus()) {
-            $this->message->setBodyHtml($html);
-            return $this;
-        }
-        $this->message
-            ->setMessageType('text/html')
-            ->setBody($html);
-        return $this;
-    }
-
-    private function filterMailData()
-    {
-        foreach($this->getMailData()->getData() as $k => $v)
-        {
-            $this->getMailData()
-                ->setData($k, $this->getFilteredVar($v));
-        }
-        return $this;
-    }
-
-    private function getFilteredVar($v)
-    {
-        return $this->getTemplateFilter()->filter($v);
-    }
-
-    private function getSurroundedBodyHtml()
-    {
-        return $this->getBodyPrefix() . $this->getMailData()->getBody() . $this->getBodySuffix();
-    }
-
 
     public function getToEmail()
     {
@@ -202,45 +195,40 @@ class Mailer extends TransportBuilder
     private function explodeIfCommaDelimited($mail)
     {
         if(!is_array($mail) && stristr($mail,',')){
-            return explode(',', $mail);
+            $mail = explode(',', $mail);
+        }
+        if(is_array($mail)) {
+            $mail = array_map('trim', $mail);
         }
         return $mail;
     }
 
-    /**
-     * @param mixed $mailData
-     */
-    public function setMailData($mailData)
+    private function filterMailData()
     {
-        $this->mailData = $mailData;
-    }
-
-    private function isMagento23Plus()
-    {
-        return version_compare($this->getMagentoVersion(), '2.3.0') >= 0;
-    }
-
-    private function getMagentoVersion()
-    {
-        return $this->getProductMetaData()->getVersion();
-    }
-
-    /**
-     * @return \Magento\Framework\App\ProductMetadataInterface
-     */
-    private function getProductMetaData()
-    {
-        /** @var \Magento\Framework\App\ProductMetadataInterface $metaData */
-        return $this->objectManager->create('\Magento\Framework\App\ProductMetadataInterface');
-    }
-
-    /**
-     * Prepare message
-     *
-     * @return $this
-     */
-    protected function prepareMessage()
-    {
+        foreach($this->getMailData()->getData() as $k => $v)
+        {
+            $this->getMailData()
+                ->setData($k, $this->getFilteredVar($v));
+        }
         return $this;
     }
+
+    private function getFilteredVar($v)
+    {
+        return $this->getTemplateFilter()->filter($v);
+    }
+
+    private function getTemplateFilter()
+    {
+        return $this->templateFilter
+            ->setStoreId($this->getStoreId())
+            ->setVariables($this->templateVars)
+            ;
+    }
+
+    private function getStoreId()
+    {
+        return $this->templateVars['store']->getStoreId();
+    }
+
 }
