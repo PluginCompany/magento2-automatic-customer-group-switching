@@ -84,6 +84,9 @@ class Save extends Rules
             if(is_array($item)){
                 $item = implode(',', $item);
             }
+            if(!empty($item) && in_array($key, ['from_date', 'to_date'])) {
+                $item = $this->date->filter($item);
+            }
         }
         return $this;
     }
