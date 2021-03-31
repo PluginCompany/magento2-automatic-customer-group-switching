@@ -78,7 +78,7 @@ class Cron extends AbstractObserver
                 //clear collection and free memory
                 $customersCollection->clear();
             } while ($currentPage <= $pages);
-        } catch (\Exception $e){
+        } catch (\Throwable $e){
             $this->logger->critical($e->getMessage());
         }
     }

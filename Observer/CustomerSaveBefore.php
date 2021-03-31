@@ -26,7 +26,7 @@ class CustomerSaveBefore extends AbstractObserver
                 $this->processRules();
             }
             $this->setNewGroupIdToCustomer();
-        } catch (\Exception $e){
+        } catch (\Throwable $e){
             $this->logger->critical($e->getMessage());
         }
     }

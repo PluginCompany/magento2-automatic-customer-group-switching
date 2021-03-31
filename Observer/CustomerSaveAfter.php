@@ -25,7 +25,7 @@ class CustomerSaveAfter extends AbstractObserver
                 //exectute rules
                 $this->ruleFactory->create()->processRules($customer,'customer_save',null,true);
             }
-        } catch (\Exception $e){
+        } catch (\Throwable $e){
             $this->logger->critical($e->getMessage());
         }
     }

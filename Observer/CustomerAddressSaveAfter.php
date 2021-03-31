@@ -33,7 +33,7 @@ class CustomerAddressSaveAfter extends AbstractObserver
                 //execute rules
                 $this->ruleFactory->create()->processRules($customer,'address_save',null,true);
             }
-        } catch (\Exception $e){
+        } catch (\Throwable $e){
             $this->logger->critical($e->getMessage());
         }
     }

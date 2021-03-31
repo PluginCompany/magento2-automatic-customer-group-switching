@@ -22,7 +22,7 @@ class SalesOrderSaveBefore extends AbstractObserver
             if(!$groupId) return;
 
             $order->setCustomerGroupId($groupId);
-        } catch (\Exception $e){
+        } catch (\Throwable $e){
             $this->logger->critical($e->getMessage());
         }
     }
