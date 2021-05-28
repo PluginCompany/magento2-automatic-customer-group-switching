@@ -14,15 +14,10 @@ class CustomerLogin extends AbstractObserver
 {
     public function execute(Observer $observer)
     {
-        $this->logger->debug('customer login event');
-
         try {
             $customer = $this->getCustomerModelFromObserver($observer);
 
             if(!$customer) return;
-
-            $this->logger->debug('customer is ' . $customer->getEmail());
-
 
             if ($customer->getId() && !$this->frameworkRegistry->registry('customer_group_switched')) {
                 //register to prevent infinite loop

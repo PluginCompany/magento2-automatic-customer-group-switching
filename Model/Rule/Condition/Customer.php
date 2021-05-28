@@ -301,6 +301,7 @@ class Customer extends AbstractCondition
         }
         switch ($this->getAttributeObject()->getFrontendInput()) {
             case 'select':
+            case 'radio':
                 return 'select';
 
             case 'multiselect':
@@ -333,6 +334,7 @@ class Customer extends AbstractCondition
         }
         switch ($this->getAttributeObject()->getFrontendInput()) {
             case 'select':
+            case 'radio':
             case 'boolean':
                 return 'select';
 
