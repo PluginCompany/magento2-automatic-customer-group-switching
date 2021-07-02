@@ -264,7 +264,7 @@ class AbstractConditionPlugin
                 break;
             case 'between':
                 $from = $this->subject->getFromdate();
-                $to = date('Y-m-d',strtotime($this->subject->getToDate() . ' +1 day'));
+                $to = date('Y-m-d',strtotime($this->subject->getTodate() . ' +1 day'));
                 break;
             case 'lessdaysago':
                 $to = false;
