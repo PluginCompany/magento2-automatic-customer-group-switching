@@ -443,7 +443,7 @@ class Rule extends AbstractModel implements RuleInterface
 
     public function getFromGroupsArray()
     {
-        return explode(',', $this->getOldCustomergroup());
+        return explode(',', (string)$this->getOldCustomergroup());
     }
 
     public function isCustomerInToGroup($customer)
@@ -453,7 +453,7 @@ class Rule extends AbstractModel implements RuleInterface
 
     public function getToGroupsArray()
     {
-        return explode(',', $this->getNewCustomergroup());
+        return explode(',', (string)$this->getNewCustomergroup());
     }
 
     public function isApplicableForEvent($eventCode)
@@ -469,7 +469,7 @@ class Rule extends AbstractModel implements RuleInterface
 
     public function getEventsArray()
     {
-        return explode(',',$this->getEvents());
+        return explode(',', (string)$this->getEvents());
     }
 
     private function getValidationObjectForRule(Rule $rule)
@@ -490,7 +490,7 @@ class Rule extends AbstractModel implements RuleInterface
 
     public function getOrderStatusArray()
     {
-        return explode(',', $this->getOrderStatus());
+        return explode(',', (string)$this->getOrderStatus());
     }
 
     private function getValidationObjectWithOrder()
@@ -733,7 +733,7 @@ class Rule extends AbstractModel implements RuleInterface
      */
     public function getNextGroup($rule)
     {
-        $toGroups = explode(',',$rule->getNewCustomergroup());
+        $toGroups = explode(',', (string)$rule->getNewCustomergroup());
         $count = count($toGroups);
         $executed = $rule->getExecutedCount();
 
@@ -811,7 +811,7 @@ class Rule extends AbstractModel implements RuleInterface
      */
     protected function getOrderStatusSqlString()
     {
-        $statusArray = explode(',', $this->getOrderStatus());
+        $statusArray = explode(',', (string)$this->getOrderStatus());
 
         //generate status string for IN clause
         $sqlStatus = [];
@@ -989,7 +989,7 @@ class Rule extends AbstractModel implements RuleInterface
         }
 
         //calculate account age
-        $date1 = new \DateTime(date('Y-m-d',strtotime($customer->getCreatedAt())));
+        $date1 = new \DateTime(date('Y-m-d',strtotime((string)$customer->getCreatedAt())));
         $date2 = new \DateTime(date('Y-m-d'));
         $accountAge = $date2->diff($date1)->format("%a");
 

@@ -194,7 +194,7 @@ class Mailer
 
     private function explodeIfCommaDelimited($mail)
     {
-        if(!is_array($mail) && stristr($mail,',')){
+        if(!is_array($mail) && stristr((string)$mail,',')){
             $mail = explode(',', $mail);
         }
         if(is_array($mail)) {

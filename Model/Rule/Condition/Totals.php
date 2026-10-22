@@ -101,8 +101,8 @@ class Totals extends AbstractCondition
         $out['periodtype'] = $this->getPeriodtype();
         $out['beforedays'] = $this->getBeforedays();
         $out['recentdays'] = $this->getRecentdays();
-        $out['todate'] = date('Y-m-d',strtotime($this->getTodate()));
-        $out['fromdate'] = date('Y-m-d',strtotime($this->getFromdate()));
+        $out['todate'] = date('Y-m-d',strtotime((string)$this->getTodate()));
+        $out['fromdate'] = date('Y-m-d',strtotime((string)$this->getFromdate()));
 
         return $out;
     }

@@ -148,10 +148,10 @@ class Allorders extends AbstractCondition
     {
         try {
             $attrCode = $this->getAttribute();
-            if(stristr($attrCode,'billingattr_')){
+            if(stristr((string)$attrCode,'billingattr_')){
                 $attrCode = str_replace('billingattr_','',$attrCode);
                 $entityCode = 'order_address';
-            }elseif(stristr($attrCode,'shippingattr_')){
+            }elseif(stristr((string)$attrCode,'shippingattr_')){
                 $attrCode = str_replace('shippingattr_','',$attrCode);
                 $entityCode = 'order_address';
             }else{
@@ -259,10 +259,10 @@ class Allorders extends AbstractCondition
         $name = $this->getAttributeOption($attribute);
 
         $prefix = '';
-        if(stristr($attribute, 'shippingattr')){
+        if(stristr((string)$attribute, 'shippingattr')){
             $prefix = __('Shipping Address ');
         }
-        if(stristr($attribute, 'billingattr')){
+        if(stristr((string)$attribute, 'billingattr')){
             $prefix = __('Billing Address ');
         }
         return $prefix . $name->getText();

@@ -71,7 +71,7 @@ class NewConditionHtml extends Action
     {
         $this->id = $this->getRequest()->getParam('id');
         $this->formName = $this->getRequest()->getParam('form_namespace');
-        $this->typeArr = explode('|', str_replace('-', '/', $this->getRequest()->getParam('type')));
+        $this->typeArr = explode('|', str_replace('-', '/', (string)$this->getRequest()->getParam('type')));
         $this->type = $this->typeArr[0];
         $this->form = $this->getRequest()->getParam('form');
         return $this;

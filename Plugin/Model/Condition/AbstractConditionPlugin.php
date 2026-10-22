@@ -21,6 +21,9 @@ class AbstractConditionPlugin
     private $method;
     private $arguments;
 
+    private $periodElementFactory;
+    private $config;
+
     public function __construct(
         PeriodElementFactory $periodElementFactory,
         PeriodConfig $config
@@ -109,7 +112,7 @@ class AbstractConditionPlugin
     {
         if ($this->subject->getInputType() == 'date' && !$this->subject->getIsValueParsed()) {
             $this->subject->setValue(
-                (new \DateTime($this->subject->getData('value')))->format('Y-m-d')
+                (new \DateTime((string)$this->subject->getData('value')))->format('Y-m-d')
             );
             $this->subject->setIsValueParsed(true);
         }
